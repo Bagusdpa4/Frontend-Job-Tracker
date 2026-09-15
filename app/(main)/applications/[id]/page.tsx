@@ -1,0 +1,62 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { mockApplications } from "@/lib/mock-data";
+import StatusBadge from "@/components/status-badge";
+import DeleteButton from "@/components/applications/delete-button";
+
+type PageProps = { params: Promise<{ id: string }> };
+
+export default async function ApplicationDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const app = mockApplications.find((a) => a.id === id);
+
+  if (!app) {
+    notFound();
+  }
+
+  return (
+    <main className="max-w-6xl mx-auto w-full px-6 py-10">
+      <Link
+        href="/applications"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 mb-6"
+      >
+        ← Kembali ke daftar
+      </Link>
+
+      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-zinc-900">
+              {app.position}
+            </h1>
+            <p className="text-zinc-500">{app.company}</p>
+          </div>
+          <StatusBadge status={app.status} />
+        </div>
+
+        <div className="mt-5 space-y-2 text-sm">
+          <p className="text-zinc-600">
+            <span className="font-medium text-zinc-800">Tanggal Lamar:</span>{" "}
+            {app.appliedDate}
+          </p>
+          {app.notes && (
+            <p className="text-zinc-600">
+              <span className="font-medium text-zinc-800">Catatan:</span>{" "}
+              {app.notes}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-6 border-t border-zinc-100 pt-4 flex gap-3">
+          <Link
+            href={`/applications/${app.id}/edit`}
+            className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          >
+            Edit
+          </Link>
+          <DeleteButton id={app.id} />
+        </div>
+      </div>
+    </main>
+  );
+}
