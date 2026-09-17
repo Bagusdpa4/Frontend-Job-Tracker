@@ -4,20 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { registerUser } from "@/features/auth/authSlice";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    // TODO: sambungkan ke API register saat backend sudah siap
-    setTimeout(() => {
+    const result = await dispatch(registerUser({ name, email, password }));
+    if (registerUser.fulfilled.match(result)) {
       router.push("/login");
-    }, 300);
+    }
   }
 
   return (
@@ -67,13 +73,15 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
               tabIndex={-1}
             >
               {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
             </button>
           </div>
         </div>
+
+        {error && <p className="text-sm text-rose-600">{error}</p>}
 
         <button
           type="submit"

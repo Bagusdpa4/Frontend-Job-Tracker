@@ -1,9 +1,20 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
-import { mockApplications } from "@/lib/mock-data";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchApplications } from "@/features/applications/applicationsSlice";
 import ApplicationCard from "@/components/applications/application-card";
 
 export default function ApplicationsPage() {
-  const applications = mockApplications;
+  const dispatch = useAppDispatch();
+  const { items, loading, error } = useAppSelector(
+    (state) => state.applications
+  );
+
+  useEffect(() => {
+    dispatch(fetchApplications());
+  }, [dispatch]);
 
   return (
     <main className="max-w-6xl mx-auto w-full px-6 py-10">
@@ -17,11 +28,14 @@ export default function ApplicationsPage() {
         </Link>
       </div>
 
-      {applications.length === 0 ? (
+      {loading && <p className="text-zinc-500">Memuat data...</p>}
+      {error && <p className="text-rose-600">{error}</p>}
+
+      {!loading && items.length === 0 ? (
         <p className="text-zinc-500">Belum ada lamaran. Yuk tambah dulu!</p>
       ) : (
         <ul className="space-y-3">
-          {applications.map((app) => (
+          {items.map((app) => (
             <li key={app.id}>
               <ApplicationCard app={app} />
             </li>

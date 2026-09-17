@@ -1,17 +1,32 @@
+"use client";
+
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { mockApplications } from "@/lib/mock-data";
+import { FiArrowLeft } from "react-icons/fi";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchApplicationById } from "@/features/applications/applicationsSlice";
 import StatusBadge from "@/components/status-badge";
 import DeleteButton from "@/components/applications/delete-button";
 
-type PageProps = { params: Promise<{ id: string }> };
+export default function ApplicationDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const dispatch = useAppDispatch();
+  const { selected: app, loading } = useAppSelector(
+    (state) => state.applications
+  );
 
-export default async function ApplicationDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const app = mockApplications.find((a) => a.id === id);
+  useEffect(() => {
+    dispatch(fetchApplicationById(id));
+  }, [dispatch, id]);
 
-  if (!app) {
-    notFound();
+  if (loading || !app) {
+    return (
+      <main className="max-w-2xl mx-auto w-full px-6 py-10">
+        <p className="text-zinc-500">Memuat data...</p>
+      </main>
+    );
   }
 
   return (
@@ -20,7 +35,8 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
         href="/applications"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 mb-6"
       >
-        ← Kembali ke daftar
+        <FiArrowLeft size={16} />
+        Kembali ke list
       </Link>
 
       <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">

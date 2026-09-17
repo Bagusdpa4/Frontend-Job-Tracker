@@ -2,10 +2,27 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+const SOURCE_OPTIONS = [
+  "LinkedIn",
+  "Email",
+  "Web Perusahaan",
+  "JobStreet",
+  "Glints",
+  "Kalibrr",
+  "Deals",
+  "Indeed",
+];
+import { useAppDispatch } from "@/lib/hooks";
+import {
+  createApplication,
+  updateApplication,
+} from "@/features/applications/applicationsSlice";
 import { JobApplication } from "@/lib/types";
+import { getTodayWIB, parseIndonesianDate } from "../date";
 
 const inputClass =
-  "w-full rounded-md border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500";
+  "w-full rounded-md border cursor-pointer border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500";
 
 export default function ApplicationForm({
   initialData,
@@ -13,28 +30,40 @@ export default function ApplicationForm({
   initialData?: JobApplication;
 }) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const isEdit = Boolean(initialData);
+
+  const initialIsCustomSource = Boolean(
+    initialData?.source && !SOURCE_OPTIONS.includes(initialData.source)
+  );
+  const [isCustomSource, setIsCustomSource] = useState(initialIsCustomSource);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    const source = isCustomSource
+      ? (formData.get("sourceCustom") as string)
+      : (formData.get("source") as string);
+
     const body = {
-      company: formData.get("company"),
-      position: formData.get("position"),
-      status: formData.get("status"),
-      appliedDate: formData.get("appliedDate"),
-      notes: formData.get("notes"),
+      company: formData.get("company") as string,
+      position: formData.get("position") as string,
+      status: formData.get("status") as JobApplication["status"],
+      source,
+      appliedDate: formData.get("appliedDate") as string,
+      notes: formData.get("notes") as string,
     };
 
-    // TODO: sambungkan ke API POST/PUT saat backend sudah siap
-    console.log(isEdit ? "Update lamaran:" : "Tambah lamaran:", body);
+    if (isEdit && initialData) {
+      await dispatch(updateApplication({ id: initialData.id, data: body }));
+    } else {
+      await dispatch(createApplication(body));
+    }
 
-    setTimeout(() => {
-      router.push("/applications");
-    }, 300);
+    router.push("/applications");
   }
 
   return (
@@ -81,9 +110,41 @@ export default function ApplicationForm({
           type="date"
           name="appliedDate"
           required
-          defaultValue={initialData?.appliedDate}
+          max={getTodayWIB()}
+          defaultValue={parseIndonesianDate(initialData?.appliedDate)}
           className={inputClass}
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Sumber Lamaran (opsional)
+        </label>
+        <select
+          name="source"
+          defaultValue={
+            initialIsCustomSource ? "Lainnya" : (initialData?.source ?? "")
+          }
+          onChange={(e) => setIsCustomSource(e.target.value === "Lainnya")}
+          className={inputClass}
+        >
+          <option value="">Pilih sumber</option>
+          {SOURCE_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+          <option value="Lainnya">Lainnya</option>
+        </select>
+
+        {isCustomSource && (
+          <input
+            name="sourceCustom"
+            placeholder="Tulis sumber lamaran"
+            defaultValue={initialIsCustomSource ? initialData?.source : ""}
+            className={`${inputClass} mt-2`}
+          />
+        )}
       </div>
 
       <div>
@@ -101,7 +162,7 @@ export default function ApplicationForm({
       <button
         type="submit"
         disabled={loading}
-        className="rounded-full bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+        className="rounded-full cursor-pointer bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
       >
         {loading
           ? "Menyimpan..."

@@ -1,8 +1,19 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
-import { mockApplications } from "@/lib/mock-data";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchApplications } from "@/features/applications/applicationsSlice";
 
 export default function Home() {
-  const applications = mockApplications;
+  const dispatch = useAppDispatch();
+  const { items: applications, loading } = useAppSelector(
+    (state) => state.applications
+  );
+
+  useEffect(() => {
+    dispatch(fetchApplications());
+  }, [dispatch]);
 
   const counts = {
     applied: applications.filter((a) => a.status === "applied").length,
@@ -21,7 +32,9 @@ export default function Home() {
         Job Application Tracker
       </h1>
       <p className="text-zinc-500 mb-8">
-        Total {applications.length} lamaran tercatat.
+        {loading
+          ? "Memuat data..."
+          : `Total ${applications.length} lamaran tercatat.`}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
