@@ -35,19 +35,19 @@ export default function ApplicationDetailPage() {
         href="/applications"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 mb-6"
       >
-        <FiArrowLeft size={16} />
+        <FiArrowLeft size={20} />
         Kembali ke list
       </Link>
 
       <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-xl lg:text-2xl font-semibold text-zinc-900 bg-red-500">
               {app.position}
             </h1>
-            <p className="text-zinc-500">{app.company}</p>
+            <StatusBadge status={app.status} />
           </div>
-          <StatusBadge status={app.status} />
+          <p className="text-zinc-500">{app.company}</p>
         </div>
 
         <div className="mt-5 space-y-2 text-sm">

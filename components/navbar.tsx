@@ -21,7 +21,7 @@ export default function Navbar() {
           href="/"
           className="font-semibold text-zinc-900 flex items-center gap-2"
         >
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-indigo-600" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-indigo-600 animate-ping" />
           JobTracker
         </Link>
 

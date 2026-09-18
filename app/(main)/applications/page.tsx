@@ -74,61 +74,65 @@ export default function ApplicationsPage() {
           href="/applications/new"
           className="rounded-full bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
-          + Tambah Lamaran
+          Tambah Lamaran
         </Link>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6">
         <input
           type="text"
           placeholder="Cari perusahaan atau posisi..."
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className={`${filterInputClass} flex-1 min-w-40`}
+          className={`${filterInputClass} w-full sm:flex-1 sm:min-w-40`}
         />
-        <select
-          value={status}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          className={filterInputClass}
-        >
-          {STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <div className="flex flex-col gap-2">
+
+        <div className="grid grid-cols-2 gap-3 sm:contents">
           <select
-            value={isCustomSource ? "Lainnya" : source}
-            onChange={(e) => {
-              if (e.target.value === "Lainnya") {
-                setIsCustomSource(true);
-                handleSourceChange("");
-              } else {
-                setIsCustomSource(false);
-                handleSourceChange(e.target.value);
-              }
-            }}
-            className={filterInputClass}
+            value={status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className={`${filterInputClass} w-full sm:w-auto`}
           >
-            <option value="">Semua Sumber</option>
-            {SOURCE_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
+            {STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
-            <option value="Lainnya">Lainnya</option>
           </select>
 
-          {isCustomSource && (
-            <input
-              type="text"
-              placeholder="Ketik sumber lamaran..."
-              value={source}
-              onChange={(e) => handleSourceChange(e.target.value)}
-              className={filterInputClass}
-            />
-          )}
+          <div className="flex flex-col gap-2 w-full sm:w-auto">
+            <select
+              value={isCustomSource ? "Lainnya" : source}
+              onChange={(e) => {
+                if (e.target.value === "Lainnya") {
+                  setIsCustomSource(true);
+                  handleSourceChange("");
+                } else {
+                  setIsCustomSource(false);
+                  handleSourceChange(e.target.value);
+                }
+              }}
+              className={`${filterInputClass} w-full sm:w-auto`}
+            >
+              <option value="">Semua Sumber</option>
+              {SOURCE_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+              <option value="Lainnya">Lainnya</option>
+            </select>
+
+            {isCustomSource && (
+              <input
+                type="text"
+                placeholder="Ketik sumber lamaran..."
+                value={source}
+                onChange={(e) => handleSourceChange(e.target.value)}
+                className={`${filterInputClass} w-full sm:w-auto`}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -148,7 +152,7 @@ export default function ApplicationsPage() {
       )}
 
       {pagination && (
-        <div className="flex items-center justify-center gap-4 mt-8">
+        <div className="flex items-center text-center justify-center gap-4 mt-8">
           <button
             type="button"
             disabled={page <= 1}

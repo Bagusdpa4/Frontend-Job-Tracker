@@ -34,7 +34,7 @@ export default function EditApplicationPage() {
         href={`/applications/${id}`}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 mb-4"
       >
-        <FiArrowLeft size={16} />
+        <FiArrowLeft size={20} />
         Kembali ke list
       </Link>
 

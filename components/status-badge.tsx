@@ -21,7 +21,7 @@ const statusLabels: Record<ApplicationStatus, string> = {
 export default function StatusBadge({ status }: { status: ApplicationStatus }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[status]}`}
+      className={`inline-flex items-center text-center rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[status]}`}
     >
       {statusLabels[status]}
     </span>

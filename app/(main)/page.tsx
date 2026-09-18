@@ -65,7 +65,7 @@ export default function Home() {
         <StatCard label="Rejected" value={counts.rejected} color="rose" />
       </div>
 
-      <div className="flex gap-3 mb-10">
+      <div className="flex gap-3 mb-10 text-center">
         <Link
           href="/applications"
           className="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
@@ -76,7 +76,7 @@ export default function Home() {
           href="/applications/new"
           className="rounded-full bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
-          + Tambah Lamaran
+          Tambah Lamaran
         </Link>
       </div>
 
