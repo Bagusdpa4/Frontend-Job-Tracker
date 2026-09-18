@@ -15,7 +15,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    dispatch(fetchApplications());
+    dispatch(fetchApplications({ all: true }));
   }, [dispatch]);
 
   const recentApplications = [...applications]

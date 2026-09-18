@@ -26,11 +26,15 @@ type ApplicationsFilter = {
   status?: string;
   source?: string;
   page?: number;
+  all?: boolean;
 };
 
 export const fetchApplications = createAsyncThunk(
   "applications/fetchAll",
-  async (filter: ApplicationsFilter | undefined, { getState, rejectWithValue }) => {
+  async (
+    filter: ApplicationsFilter | undefined,
+    { getState, rejectWithValue }
+  ) => {
     try {
       const token = (getState() as RootState).auth.token;
 
@@ -38,13 +42,17 @@ export const fetchApplications = createAsyncThunk(
       if (filter?.search) query.set("search", filter.search);
       if (filter?.status) query.set("status", filter.status);
       if (filter?.source) query.set("source", filter.source);
-      if (filter?.page) query.set("page", String(filter.page));
+      if (filter?.all) {
+        query.set("all", "true");
+      } else if (filter?.page) {
+        query.set("page", String(filter.page));
+      }
       const qs = query.toString();
 
-      const res = await apiRequest<{ data: JobApplication[]; pagination: Pagination }>(
-        `/applications${qs ? `?${qs}` : ""}`,
-        { token }
-      );
+      const res = await apiRequest<{
+        data: JobApplication[];
+        pagination: Pagination;
+      }>(`/applications${qs ? `?${qs}` : ""}`, { token });
       return res;
     } catch (err) {
       return rejectWithValue((err as Error).message);
