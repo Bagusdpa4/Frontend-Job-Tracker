@@ -55,6 +55,12 @@ export default function ApplicationDetailPage() {
             <span className="font-medium text-zinc-800">Tanggal Lamar:</span>{" "}
             {app.appliedDate}
           </p>
+          {app.source && (
+            <p className="text-zinc-600">
+              <span className="font-medium text-zinc-800">Sumber Lamar:</span>{" "}
+              {app.source}
+            </p>
+          )}
           {app.notes && (
             <p className="text-zinc-600">
               <span className="font-medium text-zinc-800">Catatan:</span>{" "}

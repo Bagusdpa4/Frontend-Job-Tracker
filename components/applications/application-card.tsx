@@ -10,8 +10,11 @@ export default function ApplicationCard({ app }: { app: JobApplication }) {
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-medium text-zinc-900">{app.position}</p>
-          <p className="text-sm text-zinc-500">{app.company}</p>
+          <p className="font-bold text-lg text-zinc-900">{app.position}</p>
+          <p className="text-md text-zinc-700">{app.company}</p>
+          {app.source && (
+            <p className="text-sm text-zinc-500 mt-0.5">{app.source}</p>
+          )}
         </div>
         <StatusBadge status={app.status} />
       </div>
