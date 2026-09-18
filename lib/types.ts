@@ -21,3 +21,10 @@ export type JobApplication = {
   appliedDate: string;
   notes?: string;
 };
+
+export type Pagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};

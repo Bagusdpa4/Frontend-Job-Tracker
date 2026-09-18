@@ -3,11 +3,14 @@ import { apiRequest } from "@/lib/api";
 import { JobApplication } from "@/lib/types";
 import type { RootState } from "@/lib/store";
 
+import type { Pagination } from "@/lib/types";
+
 type ApplicationsState = {
   items: JobApplication[];
   selected: JobApplication | null;
   loading: boolean;
   error: string | null;
+  pagination: Pagination | null;
 };
 
 const initialState: ApplicationsState = {
@@ -15,18 +18,34 @@ const initialState: ApplicationsState = {
   selected: null,
   loading: false,
   error: null,
+  pagination: null,
+};
+
+type ApplicationsFilter = {
+  search?: string;
+  status?: string;
+  source?: string;
+  page?: number;
 };
 
 export const fetchApplications = createAsyncThunk(
   "applications/fetchAll",
-  async (_, { getState, rejectWithValue }) => {
+  async (filter: ApplicationsFilter | undefined, { getState, rejectWithValue }) => {
     try {
       const token = (getState() as RootState).auth.token;
-      const res = await apiRequest<{ data: JobApplication[] }>(
-        "/applications",
+
+      const query = new URLSearchParams();
+      if (filter?.search) query.set("search", filter.search);
+      if (filter?.status) query.set("status", filter.status);
+      if (filter?.source) query.set("source", filter.source);
+      if (filter?.page) query.set("page", String(filter.page));
+      const qs = query.toString();
+
+      const res = await apiRequest<{ data: JobApplication[]; pagination: Pagination }>(
+        `/applications${qs ? `?${qs}` : ""}`,
         { token }
       );
-      return res.data;
+      return res;
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }
@@ -113,7 +132,8 @@ const applicationsSlice = createSlice({
       })
       .addCase(fetchApplications.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        state.items = action.payload.data;
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchApplications.rejected, (state, action) => {
         state.loading = false;

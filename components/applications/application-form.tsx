@@ -153,7 +153,7 @@ export default function ApplicationForm({
         </label>
         <textarea
           name="notes"
-          rows={3}
+          rows={4}
           defaultValue={initialData?.notes}
           className={inputClass}
         />

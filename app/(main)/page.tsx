@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { fetchApplications } from "@/features/applications/applicationsSlice";
+import ApplicationCard from "@/components/applications/application-card";
+import StatusPieChart from "@/components/dashboard/status-pie-chart";
+import { parseIndonesianDate } from "@/lib/date";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -14,6 +17,14 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchApplications());
   }, [dispatch]);
+
+  const recentApplications = [...applications]
+    .sort((a, b) =>
+      parseIndonesianDate(b.appliedDate).localeCompare(
+        parseIndonesianDate(a.appliedDate)
+      )
+    )
+    .slice(0, 3);
 
   const counts = {
     applied: applications.filter((a) => a.status === "applied").length,
@@ -54,7 +65,7 @@ export default function Home() {
         <StatCard label="Rejected" value={counts.rejected} color="rose" />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 mb-10">
         <Link
           href="/applications"
           className="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
@@ -68,17 +79,41 @@ export default function Home() {
           + Tambah Lamaran
         </Link>
       </div>
+
+      {!loading && applications.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-8">
+          <div>
+            <h2 className="text-lg font-semibold text-zinc-900 mb-4">
+              Progress Lamaran
+            </h2>
+            <StatusPieChart counts={counts} total={applications.length} />
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold text-zinc-900 mb-4">
+              Lamaran Terbaru
+            </h2>
+            <ul className="space-y-3">
+              {recentApplications.map((app) => (
+                <li key={app.id}>
+                  <ApplicationCard app={app} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
 
 const colorMap = {
-  blue: "bg-blue-50 text-blue-700 border-blue-100",
-  purple: "bg-purple-50 text-purple-700 border-purple-100",
-  amber: "bg-amber-50 text-amber-700 border-amber-100",
-  orange: "bg-orange-50 text-orange-700 border-orange-100",
-  emerald: "bg-emerald-50 text-emerald-700 border-emerald-100",
-  rose: "bg-rose-50 text-rose-700 border-rose-100",
+  blue: "bg-blue-200 text-blue-700 border-blue-400",
+  purple: "bg-purple-200 text-purple-700 border-purple-400",
+  amber: "bg-amber-200 text-amber-700 border-amber-400",
+  orange: "bg-orange-200 text-orange-700 border-orange-400",
+  emerald: "bg-emerald-200 text-emerald-700 border-emerald-400",
+  rose: "bg-rose-200 text-rose-700 border-rose-400",
 };
 
 function StatCard({
