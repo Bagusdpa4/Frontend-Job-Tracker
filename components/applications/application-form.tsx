@@ -2,6 +2,22 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { TbWorldSearch } from "react-icons/tb";
+import {
+  FaBuilding,
+  FaBriefcase,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaBook,
+} from "react-icons/fa";
+import { FaMapLocationDot, FaMoneyBill1Wave } from "react-icons/fa6";
+import { useAppDispatch } from "@/lib/hooks";
+import {
+  createApplication,
+  updateApplication,
+} from "@/features/applications/applicationsSlice";
+import { JobApplication } from "@/lib/types";
+import { getTodayWIB, parseIndonesianDate } from "../date";
 
 const SOURCE_OPTIONS = [
   "LinkedIn",
@@ -13,13 +29,6 @@ const SOURCE_OPTIONS = [
   "Deals",
   "Indeed",
 ];
-import { useAppDispatch } from "@/lib/hooks";
-import {
-  createApplication,
-  updateApplication,
-} from "@/features/applications/applicationsSlice";
-import { JobApplication } from "@/lib/types";
-import { getTodayWIB, parseIndonesianDate } from "../date";
 
 const inputClass =
   "w-full rounded-md border cursor-pointer border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500";
@@ -53,6 +62,8 @@ export default function ApplicationForm({
       position: formData.get("position") as string,
       status: formData.get("status") as JobApplication["status"],
       source,
+      city: formData.get("city") as string,
+      salaryRange: formData.get("salaryRange") as string,
       appliedDate: formData.get("appliedDate") as string,
       notes: formData.get("notes") as string,
     };
@@ -67,9 +78,13 @@ export default function ApplicationForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div>
-        <label className="block text-sm font-medium mb-1">Perusahaan</label>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaBuilding className="text-zinc-900" />
+          Nama Perusahaan{" "}
+          <div className="text-red-500 text-lg font-extrabold">*</div>
+        </label>
         <input
           name="company"
           required
@@ -79,7 +94,11 @@ export default function ApplicationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Posisi</label>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaBriefcase className="text-zinc-900" />
+          Posisi
+          <div className="text-red-500 text-lg font-extrabold">*</div>
+        </label>
         <input
           name="position"
           required
@@ -89,7 +108,11 @@ export default function ApplicationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Status</label>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaCheckCircle className="text-zinc-900" />
+          Status Lamaran Kerja
+          <div className="text-red-500 text-lg font-extrabold">*</div>
+        </label>
         <select
           name="status"
           defaultValue={initialData?.status ?? "applied"}
@@ -105,7 +128,11 @@ export default function ApplicationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Tanggal Lamar</label>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaCalendarAlt className="text-zinc-900" />
+          Tanggal Input Lamaran
+          <div className="text-red-500 text-lg font-extrabold">*</div>
+        </label>
         <input
           type="date"
           name="appliedDate"
@@ -117,8 +144,10 @@ export default function ApplicationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Sumber Lamaran (opsional)
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <TbWorldSearch className="text-zinc-900" />
+          Sumber Lamaran
+          <div className="text-red-500 text-lg font-extrabold">*</div>
         </label>
         <select
           name="source"
@@ -148,7 +177,34 @@ export default function ApplicationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaMapLocationDot className="text-zinc-900" />
+          Kota/Lokasi (opsional)
+        </label>
+        <input
+          name="city"
+          placeholder="Misal: Jakarta, Surabaya, Remote"
+          defaultValue={initialData?.city}
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaMoneyBill1Wave className="text-zinc-900" />
+          Kisaran Gaji (opsional)
+        </label>
+        <input
+          name="salaryRange"
+          placeholder="Misal: 8-12 juta"
+          defaultValue={initialData?.salaryRange}
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-sm font-medium mb-1">
+          <FaBook className="text-zinc-900" />
           Catatan (opsional)
         </label>
         <textarea
@@ -162,7 +218,7 @@ export default function ApplicationForm({
       <button
         type="submit"
         disabled={loading}
-        className="rounded-full cursor-pointer bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+        className="rounded-full cursor-pointer bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 hover:shadow-sm transition-colors disabled:opacity-50"
       >
         {loading
           ? "Menyimpan..."

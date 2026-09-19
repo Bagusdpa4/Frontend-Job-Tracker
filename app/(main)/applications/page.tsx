@@ -39,6 +39,7 @@ export default function ApplicationsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [source, setSource] = useState("");
+  const [city, setCity] = useState("");
   const [isCustomSource, setIsCustomSource] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -59,12 +60,17 @@ export default function ApplicationsPage() {
     setPage(1);
   }
 
+  function handleCityChange(value: string) {
+    setCity(value);
+    setPage(1);
+  }
+
   useEffect(() => {
     const timeout = setTimeout(() => {
-      dispatch(fetchApplications({ search, status, source, page }));
+      dispatch(fetchApplications({ search, status, source, city, page }));
     }, 400);
     return () => clearTimeout(timeout);
-  }, [dispatch, search, status, source, page]);
+  }, [dispatch, search, status, source, city, page]);
 
   return (
     <main className="max-w-6xl mx-auto w-full px-6 py-10">
@@ -72,7 +78,7 @@ export default function ApplicationsPage() {
         <h1 className="text-2xl font-semibold text-zinc-900">Lamaran Kerja</h1>
         <Link
           href="/applications/new"
-          className="rounded-full bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="rounded-full hover:shadow-sm bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
           Tambah Lamaran
         </Link>
@@ -81,10 +87,18 @@ export default function ApplicationsPage() {
       <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6">
         <input
           type="text"
-          placeholder="Cari perusahaan atau posisi..."
+          placeholder="Cari Nama perusahaan atau posisi..."
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
           className={`${filterInputClass} w-full sm:flex-1 sm:min-w-40`}
+        />
+
+        <input
+          type="text"
+          placeholder="Filter kota..."
+          value={city}
+          onChange={(e) => handleCityChange(e.target.value)}
+          className={`${filterInputClass} w-full sm:w-auto`}
         />
 
         <div className="grid grid-cols-2 gap-3 sm:contents">

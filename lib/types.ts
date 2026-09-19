@@ -10,14 +10,10 @@ export type JobApplication = {
   id: string;
   company: string;
   position: string;
-  status:
-    | "applied"
-    | "test"
-    | "interview HRD"
-    | "interview User"
-    | "offer"
-    | "rejected";
+  status: ApplicationStatus;
   source?: string;
+  city?: string;
+  salaryRange?: string;
   appliedDate: string;
   notes?: string;
 };

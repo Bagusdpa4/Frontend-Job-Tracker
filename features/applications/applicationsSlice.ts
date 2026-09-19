@@ -25,6 +25,7 @@ type ApplicationsFilter = {
   search?: string;
   status?: string;
   source?: string;
+  city?: string;
   page?: number;
   all?: boolean;
 };
@@ -42,6 +43,7 @@ export const fetchApplications = createAsyncThunk(
       if (filter?.search) query.set("search", filter.search);
       if (filter?.status) query.set("status", filter.status);
       if (filter?.source) query.set("source", filter.source);
+      if (filter?.city) query.set("city", filter.city);
       if (filter?.all) {
         query.set("all", "true");
       } else if (filter?.page) {

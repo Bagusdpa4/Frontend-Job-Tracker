@@ -22,7 +22,7 @@ export default function EditApplicationPage() {
 
   if (loading || !app) {
     return (
-      <main className="max-w-xl mx-auto w-full px-6 py-10">
+      <main className="max-w-6xl mx-auto w-full px-6 py-10">
         <p className="text-zinc-500">Memuat data...</p>
       </main>
     );

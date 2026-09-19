@@ -13,7 +13,7 @@ export default function NewApplicationPage() {
         Kembali ke list
       </Link>
 
-      <h1 className="text-2xl font-semibold text-zinc-900 mb-6">
+      <h1 className="text-2xl font-semibold hover:shadow-sm text-zinc-900 mb-6">
         Tambah Lamaran
       </h1>
 

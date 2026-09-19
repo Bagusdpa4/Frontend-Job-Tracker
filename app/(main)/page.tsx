@@ -68,13 +68,13 @@ export default function Home() {
       <div className="flex gap-3 mb-10 text-center">
         <Link
           href="/applications"
-          className="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          className="rounded-full border hover:border-indigo-300 hover:shadow-sm border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
         >
           Lihat Semua Lamaran
         </Link>
         <Link
           href="/applications/new"
-          className="rounded-full bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="rounded-full bg-indigo-600 hover:shadow-sm text-white px-5 py-2.5 text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
           Tambah Lamaran
         </Link>

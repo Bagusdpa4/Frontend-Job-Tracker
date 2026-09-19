@@ -81,7 +81,7 @@ export default function StatusPieChart({
   );
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-8">
+    <div className="flex flex-col sm:flex-row items-center gap-8 border border-zinc-300 rounded-xl">
       {/* Pie chart */}
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
