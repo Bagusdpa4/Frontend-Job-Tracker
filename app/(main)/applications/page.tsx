@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { fetchApplications } from "@/features/applications/applicationsSlice";
 import ApplicationCard from "@/components/applications/application-card";
+import { getTodayWIB } from "@/lib/date";
 
 const STATUS_OPTIONS = [
   { value: "", label: "Semua Status" },
@@ -40,6 +41,8 @@ export default function ApplicationsPage() {
   const [status, setStatus] = useState("");
   const [source, setSource] = useState("");
   const [city, setCity] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState(getTodayWIB());
   const [isCustomSource, setIsCustomSource] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -65,12 +68,32 @@ export default function ApplicationsPage() {
     setPage(1);
   }
 
+  function handleStartDateChange(value: string) {
+    setStartDate(value);
+    setPage(1);
+  }
+
+  function handleEndDateChange(value: string) {
+    setEndDate(value);
+    setPage(1);
+  }
+
   useEffect(() => {
     const timeout = setTimeout(() => {
-      dispatch(fetchApplications({ search, status, source, city, page }));
+      dispatch(
+        fetchApplications({
+          search,
+          status,
+          source,
+          city,
+          startDate,
+          endDate,
+          page,
+        })
+      );
     }, 400);
     return () => clearTimeout(timeout);
-  }, [dispatch, search, status, source, city, page]);
+  }, [dispatch, search, status, source, city, startDate, endDate, page]);
 
   return (
     <main className="max-w-6xl mx-auto w-full px-6 py-10">
@@ -100,6 +123,24 @@ export default function ApplicationsPage() {
           onChange={(e) => handleCityChange(e.target.value)}
           className={`${filterInputClass} w-full sm:w-auto`}
         />
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <input
+            type="date"
+            value={startDate}
+            max={endDate || undefined}
+            onChange={(e) => handleStartDateChange(e.target.value)}
+            className={`${filterInputClass} w-full sm:w-auto`}
+          />
+          <span className="text-zinc-400 text-sm shrink-0">s/d</span>
+          <input
+            type="date"
+            value={endDate}
+            min={startDate || undefined}
+            onChange={(e) => handleEndDateChange(e.target.value)}
+            className={`${filterInputClass} w-full sm:w-auto`}
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-3 sm:contents">
           <select
